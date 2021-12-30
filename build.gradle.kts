@@ -19,6 +19,7 @@ dependencies {
         exclude(module = "opus-java")
     }
     implementation("ch.qos.logback:logback-classic:1.2.10")
+    implementation("org.mariadb.jdbc:mariadb-java-client:2.7.4")
 
     compileOnly("org.projectlombok:lombok:1.18.22")
     annotationProcessor("org.projectlombok:lombok:1.18.22")
