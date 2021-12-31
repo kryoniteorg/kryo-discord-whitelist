@@ -10,13 +10,13 @@ import org.kryonite.kryodiscordbot.persistence.repository.UserRepository;
 @Slf4j
 public class MariaDbUserRepository implements UserRepository {
 
-  private static final String CREATE_USER_TABLE =
+  protected static final String CREATE_USER_TABLE =
       "CREATE TABLE IF NOT EXISTS user " +
           "(discord_id bigint primary key, " +
           "minecraft_name varchar(16), " +
           "minecraft_uuid uuid)";
 
-  private static final String INSERT_USER =
+  protected static final String INSERT_USER =
       "INSERT INTO user (discord_id, minecraft_name) VALUES(?, ?) " +
           "ON DUPLICATE KEY UPDATE minecraft_name = ?, minecraft_uuid = null";
 
