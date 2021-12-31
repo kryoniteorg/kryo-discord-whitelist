@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kryonite.kryodiscordbot.persistence.entity.User;
 import org.kryonite.kryodiscordbot.persistence.repository.UserRepository;
+import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -35,24 +36,11 @@ class MessageListenerTest {
     long discordId = 123456789123L;
     String discordMessage = "Test1234";
 
-    MessageReceivedEvent messageReceivedEvent = mock(MessageReceivedEvent.class);
-
-    net.dv8tion.jda.api.entities.User user = mock(net.dv8tion.jda.api.entities.User.class);
-    when(messageReceivedEvent.getAuthor()).thenReturn(user);
-    when(user.isBot()).thenReturn(false);
-    when(user.getIdLong()).thenReturn(discordId);
-
-    MessageChannel messageChannel = mock(MessageChannel.class);
-    when(messageReceivedEvent.getChannel()).thenReturn(messageChannel);
-    when(messageChannel.getName()).thenReturn("whitelist");
-
-    Message message = mock(Message.class);
-    when(messageReceivedEvent.getMessage()).thenReturn(message);
-    when(message.getContentStripped()).thenReturn(discordMessage);
-
-    AuditableRestAction<Void> auditableRestAction = mock(AuditableRestAction.class);
-    when(message.delete()).thenReturn(auditableRestAction);
-    when(auditableRestAction.and(any())).thenReturn(mock(RestAction.class));
+    MessageReceivedEvent messageReceivedEvent = mock(MessageReceivedEvent.class, Answers.RETURNS_DEEP_STUBS);
+    when(messageReceivedEvent.getAuthor().isBot()).thenReturn(false);
+    when(messageReceivedEvent.getAuthor().getIdLong()).thenReturn(discordId);
+    when(messageReceivedEvent.getChannel().getName()).thenReturn("whitelist");
+    when(messageReceivedEvent.getMessage().getContentStripped()).thenReturn(discordMessage);
 
     // Act
     testee.onMessageReceived(messageReceivedEvent);
@@ -64,11 +52,8 @@ class MessageListenerTest {
   @Test
   void shouldNotProcessBotMessages() {
     // Arrange
-    MessageReceivedEvent messageReceivedEvent = mock(MessageReceivedEvent.class);
-
-    net.dv8tion.jda.api.entities.User user = mock(net.dv8tion.jda.api.entities.User.class);
-    when(messageReceivedEvent.getAuthor()).thenReturn(user);
-    when(user.isBot()).thenReturn(true);
+    MessageReceivedEvent messageReceivedEvent = mock(MessageReceivedEvent.class, Answers.RETURNS_DEEP_STUBS);
+    when(messageReceivedEvent.getAuthor().isBot()).thenReturn(false);
 
     // Act
     testee.onMessageReceived(messageReceivedEvent);

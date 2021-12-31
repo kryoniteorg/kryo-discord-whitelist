@@ -11,20 +11,18 @@ import java.sql.SQLException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kryonite.kryodiscordbot.persistence.entity.User;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class MariaDbUserRepositoryTest {
 
-  @Mock
+  @Mock(answer = Answers.RETURNS_DEEP_STUBS)
   private Connection connection;
 
   @Test
   void shouldCreateTableOnStartup() throws SQLException {
-    // Arrange
-    when(connection.prepareStatement(anyString())).thenReturn(mock(PreparedStatement.class));
-
     // Act
     new MariaDbUserRepository(connection);
 
@@ -36,9 +34,6 @@ class MariaDbUserRepositoryTest {
   void shouldSaveUser() throws SQLException {
     // Arrange
     User user = User.create(123456L, "Test");
-
-    PreparedStatement preparedStatement = mock(PreparedStatement.class);
-    when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
     MariaDbUserRepository testee = new MariaDbUserRepository(connection);
 
     // Act
@@ -46,8 +41,8 @@ class MariaDbUserRepositoryTest {
 
     // Assert
     verify(connection).prepareStatement(MariaDbUserRepository.INSERT_USER);
-    verify(preparedStatement).setLong(1, user.getDiscordId());
-    verify(preparedStatement).setString(2, user.getMinecraftName());
-    verify(preparedStatement).setString(3, user.getMinecraftName());
+    verify(connection.prepareStatement(anyString())).setLong(1, user.getDiscordId());
+    verify(connection.prepareStatement(anyString())).setString(2, user.getMinecraftName());
+    verify(connection.prepareStatement(anyString())).setString(3, user.getMinecraftName());
   }
 }
