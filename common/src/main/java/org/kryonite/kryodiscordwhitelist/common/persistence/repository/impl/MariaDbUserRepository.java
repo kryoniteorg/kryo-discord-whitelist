@@ -3,11 +3,9 @@ package org.kryonite.kryodiscordwhitelist.common.persistence.repository.impl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import lombok.extern.slf4j.Slf4j;
 import org.kryonite.kryodiscordwhitelist.common.persistence.entity.User;
 import org.kryonite.kryodiscordwhitelist.common.persistence.repository.UserRepository;
 
-@Slf4j
 public class MariaDbUserRepository implements UserRepository {
 
   protected static final String CREATE_USER_TABLE =
@@ -31,15 +29,13 @@ public class MariaDbUserRepository implements UserRepository {
   }
 
   @Override
-  public void save(User user) {
+  public void save(User user) throws SQLException {
     try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USER)) {
       preparedStatement.setLong(1, user.getDiscordId());
       preparedStatement.setString(2, user.getMinecraftName());
       preparedStatement.setString(3, user.getMinecraftName());
 
       preparedStatement.executeUpdate();
-    } catch (SQLException error) {
-      log.error("Failed to save user {}", user, error);
     }
   }
 }

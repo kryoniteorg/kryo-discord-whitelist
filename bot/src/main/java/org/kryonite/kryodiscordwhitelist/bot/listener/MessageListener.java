@@ -1,5 +1,6 @@
 package org.kryonite.kryodiscordwhitelist.bot.listener;
 
+import java.sql.SQLException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Message;
@@ -26,17 +27,38 @@ public class MessageListener extends ListenerAdapter {
     Message message = event.getMessage();
     String messageContent = message.getContentStripped();
 
-    saveUserToDatabase(event, messageContent);
+    boolean saveSuccessful = saveUserToDatabase(event, messageContent);
 
     message.delete()
-        .and(event.getChannel().sendMessage("<@" + event.getAuthor().getIdLong() + "> " + messageContent
-            + " wurde erfolgreich auf die Whitelist gesetzt."))
+        .and(event.getChannel().sendMessage(createReply(event, messageContent, saveSuccessful)))
         .queue();
   }
 
-  private void saveUserToDatabase(@NotNull MessageReceivedEvent event, String messageContent) {
+  private boolean saveUserToDatabase(@NotNull MessageReceivedEvent event, String messageContent) {
     User user = User.create(event.getAuthor().getIdLong(), messageContent);
     log.info("{}", user);
-    userRepository.save(user);
+    try {
+      userRepository.save(user);
+    } catch (SQLException exception) {
+      log.error("Failed to save user {}", user, exception);
+      return false;
+    }
+
+    return true;
+  }
+
+  private String createReply(@NotNull MessageReceivedEvent event, String messageContent,
+                             boolean saveSuccessful) {
+    StringBuilder reply = new StringBuilder()
+        .append("<@")
+        .append(event.getAuthor().getIdLong())
+        .append("> ")
+        .append(messageContent);
+    if (saveSuccessful) {
+      reply.append(" wurde erfolgreich auf die Whitelist gesetzt.");
+    } else {
+      reply.append(" konnte nicht erfolgreich auf die Whitelist gesetzt werden.");
+    }
+    return reply.toString();
   }
 }

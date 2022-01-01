@@ -1,6 +1,7 @@
 package org.kryonite.kryodiscordwhitelist.common.persistence.repository;
 
 
+import java.sql.SQLException;
 import org.kryonite.kryodiscordwhitelist.common.persistence.entity.User;
 
 public interface UserRepository {
@@ -11,5 +12,5 @@ public interface UserRepository {
    *
    * @param user The user which should be saved.
    */
-  void save(User user);
+  void save(User user) throws SQLException;
 }
