@@ -7,14 +7,10 @@ plugins {
     jacoco
 }
 
-group = "org.kryonite"
-version = "0.1.0"
+allprojects {
+    group = "org.kryonite"
+    version = "0.1.0"
 
-repositories {
-    mavenCentral()
-}
-
-subprojects {
     apply(plugin = "java")
     apply(plugin = "com.github.johnrengelman.shadow")
     apply(plugin = "org.sonarqube")
