@@ -2,6 +2,8 @@ package org.kryonite.kryodiscordwhitelist.common.persistence.repository;
 
 
 import java.sql.SQLException;
+import java.util.Optional;
+import java.util.UUID;
 import org.kryonite.kryodiscordwhitelist.common.persistence.entity.User;
 
 public interface UserRepository {
@@ -13,4 +15,22 @@ public interface UserRepository {
    * @param user The user which should be saved.
    */
   void save(User user) throws SQLException;
+
+  /**
+   * Returns the {@link User} with the given minecraft uuid if present.
+   *
+   * @param minecraftUuid The players minecraft uuid
+   * @return an optional with the {@link User}
+   */
+  Optional<User> get(UUID minecraftUuid) throws SQLException;
+
+  /**
+   * Update the minecraft uuid if the player is present. Returns false if the player with the given minecraft name
+   * did not exist.
+   *
+   * @param minecraftUuid The players minecraft uuid
+   * @param minecraftName The players minecraft name
+   * @return if the player was found and updated in the database
+   */
+  boolean updateIfPresent(UUID minecraftUuid, String minecraftName) throws SQLException;
 }

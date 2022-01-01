@@ -35,7 +35,7 @@ public class MessageListener extends ListenerAdapter {
   }
 
   private boolean saveUserToDatabase(@NotNull MessageReceivedEvent event, String messageContent) {
-    User user = User.create(event.getAuthor().getIdLong(), messageContent);
+    User user = User.create(event.getAuthor().getIdLong(), messageContent, null);
     log.info("{}", user);
     try {
       userRepository.save(user);
