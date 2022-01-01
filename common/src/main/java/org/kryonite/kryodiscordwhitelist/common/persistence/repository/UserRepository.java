@@ -1,0 +1,16 @@
+package org.kryonite.kryodiscordwhitelist.common.persistence.repository;
+
+
+import java.sql.SQLException;
+import org.kryonite.kryodiscordwhitelist.common.persistence.entity.User;
+
+public interface UserRepository {
+
+  /**
+   * Saves the given {@link User} into the database. Only the {@link User#getDiscordId()}
+   * and {@link User#getMinecraftName()} are used. The minecraft_uuid is set to null if the user existed previously.
+   *
+   * @param user The user which should be saved.
+   */
+  void save(User user) throws SQLException;
+}

@@ -1,72 +1,65 @@
 plugins {
-    `java-library`
-    `maven-publish`
+    java
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("org.sonarqube") version "3.3"
+    id("io.freefair.lombok") version "6.3.0"
     checkstyle
     jacoco
 }
 
-group = "org.kryonite"
-version = "0.1.0"
+allprojects {
+    group = "org.kryonite"
+    version = "0.1.0"
 
-repositories {
-    mavenCentral()
-}
+    apply(plugin = "java")
+    apply(plugin = "com.github.johnrengelman.shadow")
+    apply(plugin = "org.sonarqube")
+    apply(plugin = "io.freefair.lombok")
+    apply(plugin = "checkstyle")
+    apply(plugin = "jacoco")
 
-dependencies {
-    implementation("net.dv8tion:JDA:5.0.0-alpha.3") {
-        exclude(module = "opus-java")
+    repositories {
+        mavenCentral()
     }
-    implementation("ch.qos.logback:logback-classic:1.2.10")
-    implementation("org.mariadb.jdbc:mariadb-java-client:2.7.4")
 
-    compileOnly("org.projectlombok:lombok:1.18.22")
-    annotationProcessor("org.projectlombok:lombok:1.18.22")
+    dependencies {
+        val junitVersion = "5.8.2"
 
-    testImplementation("ch.qos.logback:logback-classic:1.2.10")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.8.2")
-    testImplementation("org.mockito:mockito-junit-jupiter:4.2.0")
+        implementation("ch.qos.logback:logback-classic:1.2.10")
 
-    testCompileOnly("org.projectlombok:lombok:1.18.22")
-    testAnnotationProcessor("org.projectlombok:lombok:1.18.22")
-}
-
-tasks.test {
-    finalizedBy("jacocoTestReport")
-    useJUnitPlatform()
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-    withJavadocJar()
-}
-
-tasks.jacocoTestReport {
-    reports {
-        xml.required.set(true)
+        testImplementation("ch.qos.logback:logback-classic:1.2.10")
+        testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
+        testImplementation("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+        testImplementation("org.mockito:mockito-junit-jupiter:4.2.0")
     }
-}
 
-checkstyle {
-    toolVersion = "9.2"
-    config = project.resources.text.fromUri("https://kryonite.org/checkstyle.xml")
-}
-
-sonarqube {
-    properties {
-        property("sonar.projectKey", "kryonitelabs_kryo-discord-bot")
-        property("sonar.organization", "kryonitelabs")
-        property("sonar.host.url", "https://sonarcloud.io")
+    tasks.test {
+        finalizedBy("jacocoTestReport")
+        useJUnitPlatform()
     }
-}
 
-val tokens = mapOf("VERSION" to project.version)
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+        withJavadocJar()
+    }
 
-tasks.withType<ProcessResources> {
-    filesMatching("*.yml") {
-        filter<org.apache.tools.ant.filters.ReplaceTokens>("tokens" to tokens)
+    tasks.jacocoTestReport {
+        reports {
+            xml.required.set(true)
+        }
+    }
+
+    checkstyle {
+        toolVersion = "9.2.1"
+        config = project.resources.text.fromUri("https://kryonite.org/checkstyle.xml")
+    }
+
+    sonarqube {
+        properties {
+            property("sonar.projectKey", "kryonitelabs_kryo-discord-bot")
+            property("sonar.organization", "kryonitelabs")
+            property("sonar.host.url", "https://sonarcloud.io")
+        }
     }
 }
