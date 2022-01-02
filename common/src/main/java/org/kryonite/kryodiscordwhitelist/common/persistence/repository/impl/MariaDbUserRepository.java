@@ -16,7 +16,7 @@ public class MariaDbUserRepository implements UserRepository {
           + "(id int primary key auto_increment, "
           + "discord_id bigint not null, "
           + "minecraft_name varchar(16) unique not null, "
-          + "minecraft_uuid uuid unique)";
+          + "minecraft_uuid varchar(36) unique)";
   protected static final String INSERT_USER = "INSERT INTO user (discord_id, minecraft_name) VALUES(?, ?)";
   protected static final String GET_USER_BY_DISCORD_ID = "SELECT * FROM user WHERE minecraft_name = ?";
   protected static final String GET_USER_BY_NAME = "SELECT * FROM user WHERE minecraft_name = ?";

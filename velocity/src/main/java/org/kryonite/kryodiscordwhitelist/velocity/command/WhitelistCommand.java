@@ -2,6 +2,7 @@ package org.kryonite.kryodiscordwhitelist.velocity.command;
 
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
+import com.velocitypowered.api.proxy.ProxyServer;
 import java.sql.SQLException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ public class WhitelistCommand implements SimpleCommand {
   protected static final String PERMISSION = "whitelist";
 
   private final UserRepository userRepository;
+  private final ProxyServer server;
 
   @Override
   public void execute(Invocation invocation) {
@@ -44,6 +46,7 @@ public class WhitelistCommand implements SimpleCommand {
 
   private void sendUsage(CommandSource source) {
     source.sendMessage(Component.text("/whitelist add <name>").color(NamedTextColor.AQUA)
+        .append(Component.newline())
         .append(Component.text("/whitelist remove <name>").color(NamedTextColor.AQUA)));
   }
 
@@ -66,6 +69,8 @@ public class WhitelistCommand implements SimpleCommand {
       boolean successful = userRepository.removeUser(minecraftName);
       if (successful) {
         source.sendMessage(Component.text("Removed user " + minecraftName + " from the whitelist."));
+        server.getPlayer(minecraftName).ifPresent(player ->
+            player.disconnect(Component.text("Du befindest dich nicht mehr auf der Whitelist!")));
       } else {
         source.sendMessage(Component.text("User " + minecraftName + " wasn't on the whitelist."));
       }

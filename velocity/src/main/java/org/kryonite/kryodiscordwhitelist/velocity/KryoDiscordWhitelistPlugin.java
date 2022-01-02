@@ -22,18 +22,23 @@ import org.mariadb.jdbc.Driver;
 public class KryoDiscordWhitelistPlugin {
 
   private final ProxyServer server;
+  private Connection connection;
 
   @Inject
   public KryoDiscordWhitelistPlugin(ProxyServer server) {
     this.server = server;
   }
 
+  public KryoDiscordWhitelistPlugin(ProxyServer server, Connection connection) {
+    this.server = server;
+    this.connection = connection;
+  }
+
   @Subscribe
   public void onInitialize(ProxyInitializeEvent event) {
     UserRepository userRepository;
     try {
-      DriverManager.registerDriver(new Driver());
-      Connection connection = DriverManager.getConnection(getConnectionString());
+      setupConnection();
       userRepository = new MariaDbUserRepository(connection);
     } catch (SQLException exception) {
       log.error("Failed to setup UserRepository", exception);
@@ -43,7 +48,14 @@ public class KryoDiscordWhitelistPlugin {
     server.getEventManager().register(this, new PlayerListener(userRepository));
 
     CommandMeta whitelist = server.getCommandManager().metaBuilder("wl").build();
-    server.getCommandManager().register(whitelist, new WhitelistCommand(userRepository));
+    server.getCommandManager().register(whitelist, new WhitelistCommand(userRepository, server));
+  }
+
+  private void setupConnection() throws SQLException {
+    if (connection == null) {
+      DriverManager.registerDriver(new Driver());
+      connection = DriverManager.getConnection(getConnectionString());
+    }
   }
 
   private String getConnectionString() {
