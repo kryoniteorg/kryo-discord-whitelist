@@ -16,14 +16,23 @@ public class KryoDiscordWhitelistBot extends ListenerAdapter {
   public static void main(String[] args) throws LoginException, InterruptedException, SQLException {
     setupForkJoinPoolParallelism();
 
-    Connection connection = DriverManager.getConnection(System.getenv("CONNECTION_STRING"));
+    Connection connection = DriverManager.getConnection(getEnv("CONNECTION_STRING"));
     UserRepository userRepository = new MariaDbUserRepository(connection);
 
-    JDABuilder.createDefault(System.getenv("TOKEN"))
+    JDABuilder.createDefault(getEnv("TOKEN"))
         .addEventListeners(new MessageListener(userRepository))
         .setActivity(Activity.playing("Minecraft"))
         .build()
         .awaitReady();
+  }
+
+  private static String getEnv(String name) {
+    String connectionString = System.getenv(name);
+    if (connectionString == null) {
+      connectionString = System.getProperty(name);
+    }
+
+    return connectionString;
   }
 
   // There's currently a bug with Java 17: https://github.com/DV8FromTheWorld/JDA/issues/1858
