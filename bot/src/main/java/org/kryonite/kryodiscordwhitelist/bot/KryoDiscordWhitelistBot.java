@@ -49,7 +49,7 @@ public class KryoDiscordWhitelistBot extends ListenerAdapter {
     return connectionString;
   }
 
-  public void setupBot() throws LoginException, InterruptedException {
+  private void setupBot() throws LoginException, InterruptedException {
     JDABuilder.createDefault(getEnv("TOKEN"))
         .addEventListeners(new MessageListener(userRepository))
         .setActivity(Activity.playing("Minecraft"))
