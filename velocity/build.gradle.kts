@@ -9,4 +9,7 @@ dependencies {
 
     compileOnly("com.velocitypowered:velocity-api:$velocityVersion")
     annotationProcessor("com.velocitypowered:velocity-api:$velocityVersion")
+
+    testImplementation("com.velocitypowered:velocity-api:$velocityVersion")
+    testAnnotationProcessor("com.velocitypowered:velocity-api:$velocityVersion")
 }
