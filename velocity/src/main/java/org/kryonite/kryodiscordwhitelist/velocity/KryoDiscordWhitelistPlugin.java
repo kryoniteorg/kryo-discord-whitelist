@@ -2,6 +2,7 @@ package org.kryonite.kryodiscordwhitelist.velocity;
 
 
 import com.google.inject.Inject;
+import com.velocitypowered.api.command.CommandMeta;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Plugin;
@@ -12,6 +13,7 @@ import java.sql.SQLException;
 import lombok.extern.slf4j.Slf4j;
 import org.kryonite.kryodiscordwhitelist.common.persistence.repository.UserRepository;
 import org.kryonite.kryodiscordwhitelist.common.persistence.repository.impl.MariaDbUserRepository;
+import org.kryonite.kryodiscordwhitelist.velocity.command.WhitelistCommand;
 import org.kryonite.kryodiscordwhitelist.velocity.listener.PlayerListener;
 import org.mariadb.jdbc.Driver;
 
@@ -20,18 +22,23 @@ import org.mariadb.jdbc.Driver;
 public class KryoDiscordWhitelistPlugin {
 
   private final ProxyServer server;
+  private Connection connection;
 
   @Inject
   public KryoDiscordWhitelistPlugin(ProxyServer server) {
     this.server = server;
   }
 
+  public KryoDiscordWhitelistPlugin(ProxyServer server, Connection connection) {
+    this.server = server;
+    this.connection = connection;
+  }
+
   @Subscribe
   public void onInitialize(ProxyInitializeEvent event) {
     UserRepository userRepository;
     try {
-      DriverManager.registerDriver(new Driver());
-      Connection connection = DriverManager.getConnection(System.getenv("CONNECTION_STRING"));
+      setupConnection();
       userRepository = new MariaDbUserRepository(connection);
     } catch (SQLException exception) {
       log.error("Failed to setup UserRepository", exception);
@@ -39,5 +46,24 @@ public class KryoDiscordWhitelistPlugin {
     }
 
     server.getEventManager().register(this, new PlayerListener(userRepository));
+
+    CommandMeta whitelist = server.getCommandManager().metaBuilder("wl").build();
+    server.getCommandManager().register(whitelist, new WhitelistCommand(userRepository, server));
+  }
+
+  private void setupConnection() throws SQLException {
+    if (connection == null) {
+      DriverManager.registerDriver(new Driver());
+      connection = DriverManager.getConnection(getConnectionString());
+    }
+  }
+
+  private String getConnectionString() {
+    String connectionString = System.getenv("CONNECTION_STRING");
+    if (connectionString == null) {
+      connectionString = System.getProperty("CONNECTION_STRING");
+    }
+
+    return connectionString;
   }
 }

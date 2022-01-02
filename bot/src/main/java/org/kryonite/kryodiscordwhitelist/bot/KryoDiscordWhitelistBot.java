@@ -13,24 +13,47 @@ import org.kryonite.kryodiscordwhitelist.common.persistence.repository.impl.Mari
 
 public class KryoDiscordWhitelistBot extends ListenerAdapter {
 
-  public static void main(String[] args) throws LoginException, InterruptedException, SQLException {
+  private final UserRepository userRepository;
+
+  public KryoDiscordWhitelistBot() throws SQLException {
     setupForkJoinPoolParallelism();
 
-    Connection connection = DriverManager.getConnection(System.getenv("CONNECTION_STRING"));
-    UserRepository userRepository = new MariaDbUserRepository(connection);
+    Connection connection = DriverManager.getConnection(getEnv("CONNECTION_STRING"));
+    userRepository = new MariaDbUserRepository(connection);
+  }
 
-    JDABuilder.createDefault(System.getenv("TOKEN"))
-        .addEventListeners(new MessageListener(userRepository))
-        .setActivity(Activity.playing("Minecraft"))
-        .build()
-        .awaitReady();
+  public KryoDiscordWhitelistBot(Connection connection) throws SQLException {
+    setupForkJoinPoolParallelism();
+    userRepository = new MariaDbUserRepository(connection);
+  }
+
+  public static void main(String[] args) throws LoginException, InterruptedException, SQLException {
+    KryoDiscordWhitelistBot kryoDiscordWhitelistBot = new KryoDiscordWhitelistBot();
+    kryoDiscordWhitelistBot.setupBot();
   }
 
   // There's currently a bug with Java 17: https://github.com/DV8FromTheWorld/JDA/issues/1858
-  private static void setupForkJoinPoolParallelism() {
+  private void setupForkJoinPoolParallelism() {
     int cores = Runtime.getRuntime().availableProcessors();
     if (cores <= 1) {
       System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", "1");
     }
+  }
+
+  private String getEnv(String name) {
+    String connectionString = System.getenv(name);
+    if (connectionString == null) {
+      connectionString = System.getProperty(name);
+    }
+
+    return connectionString;
+  }
+
+  private void setupBot() throws LoginException, InterruptedException {
+    JDABuilder.createDefault(getEnv("TOKEN"))
+        .addEventListeners(new MessageListener(userRepository))
+        .setActivity(Activity.playing("Minecraft"))
+        .build()
+        .awaitReady();
   }
 }
