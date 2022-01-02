@@ -43,7 +43,7 @@ class MessageListenerTest {
     testee.onMessageReceived(messageReceivedEvent);
 
     // Assert
-    verify(userRepositoryMock).save(User.create(discordId, discordMessage));
+    verify(userRepositoryMock).save(User.create(discordId, discordMessage, null));
   }
 
   @Test
