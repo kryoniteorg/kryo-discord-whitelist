@@ -13,16 +13,19 @@ public class MariaDbUserRepository implements UserRepository {
 
   protected static final String CREATE_USER_TABLE =
       "CREATE TABLE IF NOT EXISTS user "
-          + "(discord_id bigint primary key, "
-          + "minecraft_name varchar(16), "
-          + "minecraft_uuid uuid)";
-
-  protected static final String INSERT_USER =
-      "INSERT INTO user (discord_id, minecraft_name) VALUES(?, ?) "
-          + "ON DUPLICATE KEY UPDATE minecraft_name = ?, minecraft_uuid = null";
-
-  protected static final String GET_USER = "SELECT * FROM user WHERE minecraft_uuid = ?";
+          + "(id int primary key auto_increment, "
+          + "discord_id bigint not null, "
+          + "minecraft_name varchar(16) unique not null, "
+          + "minecraft_uuid uuid unique)";
+  protected static final String INSERT_USER = "INSERT INTO user (discord_id, minecraft_name) VALUES(?, ?)";
+  protected static final String GET_USER_BY_DISCORD_ID = "SELECT * FROM user WHERE minecraft_name = ?";
+  protected static final String GET_USER_BY_NAME = "SELECT * FROM user WHERE minecraft_name = ?";
+  protected static final String GET_USER_BY_MINECRAFT_UUID = "SELECT * FROM user WHERE minecraft_uuid = ?";
+  protected static final String DELETE_USER_BY_MINECRAFT_NAME = "DELETE FROM user WHERE minecraft_name = ?";
   protected static final String UPDATE_USER = "UPDATE user SET minecraft_uuid = ? WHERE minecraft_name = ?";
+  protected static final String UPDATE_USER_WHERE_DISCORD_ID =
+      "UPDATE user SET minecraft_uuid = null, minecraft_name = ? "
+          + "WHERE discord_id = ?";
 
   private final Connection connection;
 
@@ -35,19 +38,64 @@ public class MariaDbUserRepository implements UserRepository {
   }
 
   @Override
+  public boolean addIfNotPresent(String minecraftName) throws SQLException {
+    try (PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_BY_NAME)) {
+      preparedStatement.setString(1, minecraftName);
+
+      ResultSet resultSet = preparedStatement.executeQuery();
+      if (resultSet.first()) {
+        return false;
+      }
+    }
+
+    insertUser(-1, minecraftName);
+    return true;
+  }
+
+  @Override
   public void save(User user) throws SQLException {
-    try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USER)) {
+    try (PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_BY_DISCORD_ID)) {
       preparedStatement.setLong(1, user.getDiscordId());
-      preparedStatement.setString(2, user.getMinecraftName());
-      preparedStatement.setString(3, user.getMinecraftName());
+
+      ResultSet resultSet = preparedStatement.executeQuery();
+      if (resultSet.first()) {
+        updateUser(user);
+      } else {
+        insertUser(user.getDiscordId(), user.getMinecraftName());
+      }
+    }
+  }
+
+  private void updateUser(User user) throws SQLException {
+    try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_USER_WHERE_DISCORD_ID)) {
+      preparedStatement.setString(1, user.getMinecraftName());
+      preparedStatement.setLong(2, user.getDiscordId());
+
+      preparedStatement.executeUpdate();
+    }
+  }
+
+  private void insertUser(long discordId, String minecraftName) throws SQLException {
+    try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USER)) {
+      preparedStatement.setLong(1, discordId);
+      preparedStatement.setString(2, minecraftName);
 
       preparedStatement.executeUpdate();
     }
   }
 
   @Override
+  public boolean removeUser(String minecraftName) throws SQLException {
+    try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE_USER_BY_MINECRAFT_NAME)) {
+      preparedStatement.setString(1, minecraftName);
+
+      return preparedStatement.executeUpdate() > 0;
+    }
+  }
+
+  @Override
   public Optional<User> get(UUID minecraftUuid) throws SQLException {
-    try (PreparedStatement preparedStatement = connection.prepareStatement(GET_USER)) {
+    try (PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_BY_MINECRAFT_UUID)) {
       preparedStatement.setString(1, minecraftUuid.toString());
 
       ResultSet resultSet = preparedStatement.executeQuery();
