@@ -14,6 +14,8 @@ import org.kryonite.kryodiscordwhitelist.common.persistence.repository.impl.Mari
 public class KryoDiscordWhitelistBot extends ListenerAdapter {
 
   public static void main(String[] args) throws LoginException, InterruptedException, SQLException {
+    setupForkJoinPoolParallelism();
+
     Connection connection = DriverManager.getConnection(System.getenv("CONNECTION_STRING"));
     UserRepository userRepository = new MariaDbUserRepository(connection);
 
@@ -22,5 +24,13 @@ public class KryoDiscordWhitelistBot extends ListenerAdapter {
         .setActivity(Activity.playing("Minecraft"))
         .build()
         .awaitReady();
+  }
+
+  // There's currently a bug with Java 17: https://github.com/DV8FromTheWorld/JDA/issues/1858
+  private static void setupForkJoinPoolParallelism() {
+    int cores = Runtime.getRuntime().availableProcessors();
+    if (cores <= 1) {
+      System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", "1");
+    }
   }
 }

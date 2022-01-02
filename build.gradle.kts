@@ -1,5 +1,5 @@
 plugins {
-    java
+    `java-library`
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("org.sonarqube") version "3.3"
     id("io.freefair.lombok") version "6.3.0"
@@ -11,7 +11,7 @@ allprojects {
     group = "org.kryonite"
     version = "0.1.0"
 
-    apply(plugin = "java")
+    apply(plugin = "java-library")
     apply(plugin = "com.github.johnrengelman.shadow")
     apply(plugin = "org.sonarqube")
     apply(plugin = "io.freefair.lombok")
