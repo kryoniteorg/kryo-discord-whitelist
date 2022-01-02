@@ -32,7 +32,7 @@ class PlayerListenerTest {
   private UserRepository userRepositoryMock;
 
   @Test
-  void shouldLoginSuccessfulWhenUuidIsPresent() throws SQLException {
+  void shouldAllowLogin_WhenUuidIsPresent() throws SQLException {
     // Arrange
     UUID playerUniqueId = UUID.randomUUID();
 
@@ -51,7 +51,7 @@ class PlayerListenerTest {
   }
 
   @Test
-  void shouldLoginSuccessfulWhenUuidNotPresentButNamePresent() throws SQLException {
+  void shouldAllowLogin_WhenUuidNotPresentButNamePresent() throws SQLException {
     // Arrange
     UUID playerUniqueId = UUID.randomUUID();
     String playerName = "Testee";
@@ -74,7 +74,7 @@ class PlayerListenerTest {
   }
 
   @Test
-  void shouldDenyLoginWhenUuidAndMinecraftNameNotPresent() throws SQLException {
+  void shouldDenyLogin_WhenUuidAndMinecraftNameNotPresent() throws SQLException {
     // Arrange
     UUID playerUniqueId = UUID.randomUUID();
     String playerName = "Testee";
