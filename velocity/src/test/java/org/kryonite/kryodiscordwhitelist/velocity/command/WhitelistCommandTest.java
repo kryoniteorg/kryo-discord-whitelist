@@ -1,20 +1,18 @@
 package org.kryonite.kryodiscordwhitelist.velocity.command;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import com.velocitypowered.api.command.SimpleCommand;
-import com.velocitypowered.api.proxy.Player;
-import com.velocitypowered.api.proxy.ProxyServer;
 import java.sql.SQLException;
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kryonite.kryodiscordwhitelist.common.persistence.repository.UserRepository;
+import org.kryonite.kryodiscordwhitelist.velocity.messaging.MessagingController;
 import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -29,8 +27,8 @@ class WhitelistCommandTest {
   @Mock
   private UserRepository userRepository;
 
-  @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-  private ProxyServer server;
+  @Mock
+  private MessagingController messagingController;
 
   @Test
   void shouldSendUsage() {
@@ -87,13 +85,13 @@ class WhitelistCommandTest {
     SimpleCommand.Invocation invocation = mock(SimpleCommand.Invocation.class, Answers.RETURNS_DEEP_STUBS);
     when(invocation.arguments()).thenReturn(new String[] {"remove", minecraftName});
     when(userRepository.removeUser(any())).thenReturn(true);
-    when(server.getPlayer(anyString())).thenReturn(Optional.of(mock(Player.class)));
 
     // Act
     testee.execute(invocation);
 
     // Assert
     verify(userRepository).removeUser(minecraftName);
+    verify(messagingController).sendRemovedPlayerFromWhitelist(minecraftName);
   }
 
   @Test
@@ -111,5 +109,18 @@ class WhitelistCommandTest {
     // Assert
     verify(userRepository).removeUser(minecraftName);
     verify(invocation.source()).sendMessage(any());
+  }
+
+  @Test
+  void shouldCheckPermission() {
+    // Arrange
+    SimpleCommand.Invocation invocation = mock(SimpleCommand.Invocation.class, Answers.RETURNS_DEEP_STUBS);
+    when(invocation.source().hasPermission(WhitelistCommand.PERMISSION)).thenReturn(true);
+
+    // Act
+    boolean result = testee.hasPermission(invocation);
+
+    // Assert
+    assertTrue(result, "Result was not true");
   }
 }

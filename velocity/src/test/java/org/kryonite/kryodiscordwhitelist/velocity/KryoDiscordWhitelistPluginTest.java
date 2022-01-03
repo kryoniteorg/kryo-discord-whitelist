@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kryonite.kryodiscordwhitelist.velocity.command.WhitelistCommand;
 import org.kryonite.kryodiscordwhitelist.velocity.listener.PlayerListener;
+import org.kryonite.kryomessaging.api.MessagingService;
 import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -31,6 +32,9 @@ class KryoDiscordWhitelistPluginTest {
 
   @Mock(answer = Answers.RETURNS_DEEP_STUBS)
   private Connection connection;
+
+  @Mock
+  private MessagingService messagingService;
 
   @Test
   void shouldRegisterListenerAndCommand() {
