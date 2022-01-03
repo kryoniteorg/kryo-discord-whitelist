@@ -8,7 +8,7 @@ dependencies {
 
     implementation(project(":kryo-discord-whitelist-common"))
 
-    implementation("com.github.kryonitelabs:kryo-messaging:bugfix~fix-jitpack-build-SNAPSHOT")
+    implementation("com.github.kryonitelabs:kryo-messaging:2.0.1")
     compileOnly("com.velocitypowered:velocity-api:$velocityVersion")
     annotationProcessor("com.velocitypowered:velocity-api:$velocityVersion")
 
