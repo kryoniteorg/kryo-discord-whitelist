@@ -1,7 +1,7 @@
 package org.kryonite.kryodiscordwhitelist.bot;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import java.sql.SQLException;
 import javax.security.auth.login.LoginException;
 import net.dv8tion.jda.api.JDABuilder;
@@ -18,13 +18,15 @@ public class KryoDiscordWhitelistBot extends ListenerAdapter {
   public KryoDiscordWhitelistBot() throws SQLException {
     setupForkJoinPoolParallelism();
 
-    Connection connection = DriverManager.getConnection(getEnv("CONNECTION_STRING"));
-    userRepository = new MariaDbUserRepository(connection);
+    HikariConfig hikariConfig = new HikariConfig();
+    hikariConfig.setJdbcUrl(getEnv("CONNECTION_STRING"));
+
+    userRepository = new MariaDbUserRepository(new HikariDataSource(hikariConfig));
   }
 
-  public KryoDiscordWhitelistBot(Connection connection) throws SQLException {
+  public KryoDiscordWhitelistBot(HikariDataSource hikariDataSource) throws SQLException {
     setupForkJoinPoolParallelism();
-    userRepository = new MariaDbUserRepository(connection);
+    userRepository = new MariaDbUserRepository(hikariDataSource);
   }
 
   public static void main(String[] args) throws LoginException, InterruptedException, SQLException {

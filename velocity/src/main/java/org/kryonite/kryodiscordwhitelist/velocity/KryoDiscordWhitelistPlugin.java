@@ -8,8 +8,9 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
@@ -33,7 +34,7 @@ import org.mariadb.jdbc.Driver;
 public class KryoDiscordWhitelistPlugin {
 
   private final ProxyServer server;
-  private Connection connection;
+  private HikariDataSource hikariDataSource;
   private MessagingService messagingService;
 
   @Inject
@@ -53,8 +54,8 @@ public class KryoDiscordWhitelistPlugin {
 
     UserRepository userRepository;
     try {
-      setupConnection();
-      userRepository = new MariaDbUserRepository(connection);
+      setupHikariDataSource();
+      userRepository = new MariaDbUserRepository(hikariDataSource);
     } catch (SQLException exception) {
       log.error("Failed to setup UserRepository", exception);
       return;
@@ -81,10 +82,12 @@ public class KryoDiscordWhitelistPlugin {
     return messagingController;
   }
 
-  private void setupConnection() throws SQLException {
-    if (connection == null) {
+  private void setupHikariDataSource() throws SQLException {
+    if (hikariDataSource == null) {
       DriverManager.registerDriver(new Driver());
-      connection = DriverManager.getConnection(getEnv("CONNECTION_STRING"));
+      HikariConfig hikariConfig = new HikariConfig();
+      hikariConfig.setJdbcUrl(getEnv("CONNECTION_STRING"));
+      hikariDataSource = new HikariDataSource(hikariConfig);
     }
   }
 

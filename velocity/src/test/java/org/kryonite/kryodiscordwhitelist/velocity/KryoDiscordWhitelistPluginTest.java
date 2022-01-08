@@ -9,7 +9,7 @@ import static org.mockito.Mockito.when;
 
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.proxy.ProxyServer;
-import java.sql.Connection;
+import com.zaxxer.hikari.HikariDataSource;
 import java.sql.SQLException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +31,7 @@ class KryoDiscordWhitelistPluginTest {
   private ProxyServer proxyServerMock;
 
   @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-  private Connection connection;
+  private HikariDataSource hikariDataSource;
 
   @Mock
   private MessagingService messagingService;
@@ -53,7 +53,7 @@ class KryoDiscordWhitelistPluginTest {
   void shouldNotRegisterListener_WhenDatabaseNotAvailable() throws SQLException {
     // Arrange
     ProxyInitializeEvent proxyInitializeEvent = new ProxyInitializeEvent();
-    when(connection.prepareStatement(anyString())).thenThrow(SQLException.class);
+    when(hikariDataSource.getConnection().prepareStatement(anyString())).thenThrow(SQLException.class);
 
     // Act
     testee.onInitialize(proxyInitializeEvent);
