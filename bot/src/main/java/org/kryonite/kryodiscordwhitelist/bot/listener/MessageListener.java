@@ -27,11 +27,12 @@ public class MessageListener extends ListenerAdapter {
 
     Message message = event.getMessage();
     String messageContent = message.getContentStripped();
+    message.delete()
+        .queue();
 
     SaveUserResult saveUserResult = saveUserToDatabase(event, messageContent);
-
-    message.delete()
-        .and(event.getChannel().sendMessage(createReply(event, messageContent, saveUserResult)))
+    event.getChannel()
+        .sendMessage(createReply(event, messageContent, saveUserResult))
         .queue();
   }
 

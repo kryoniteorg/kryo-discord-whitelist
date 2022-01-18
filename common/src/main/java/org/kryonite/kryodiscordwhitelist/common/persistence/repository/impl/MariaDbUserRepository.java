@@ -1,6 +1,7 @@
 package org.kryonite.kryodiscordwhitelist.common.persistence.repository.impl;
 
 import com.zaxxer.hikari.HikariDataSource;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -39,7 +40,8 @@ public class MariaDbUserRepository implements UserRepository {
 
   @Override
   public boolean addIfNotPresent(String minecraftName) throws SQLException {
-    try (PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(GET_USER_BY_NAME)) {
+    try (Connection connection = dataSource.getConnection();
+         PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_BY_NAME)) {
       preparedStatement.setString(1, minecraftName);
 
       ResultSet resultSet = preparedStatement.executeQuery();
@@ -54,7 +56,8 @@ public class MariaDbUserRepository implements UserRepository {
 
   @Override
   public void save(User user) throws SQLException {
-    try (PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(GET_USER_BY_DISCORD_ID)) {
+    try (Connection connection = dataSource.getConnection();
+         PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_BY_DISCORD_ID)) {
       preparedStatement.setLong(1, user.getDiscordId());
 
       ResultSet resultSet = preparedStatement.executeQuery();
@@ -67,8 +70,8 @@ public class MariaDbUserRepository implements UserRepository {
   }
 
   private void updateUser(User user) throws SQLException {
-    try (PreparedStatement preparedStatement = dataSource.getConnection()
-        .prepareStatement(UPDATE_USER_WHERE_DISCORD_ID)) {
+    try (Connection connection = dataSource.getConnection();
+         PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_USER_WHERE_DISCORD_ID)) {
       preparedStatement.setString(1, user.getMinecraftName());
       preparedStatement.setLong(2, user.getDiscordId());
 
@@ -77,7 +80,8 @@ public class MariaDbUserRepository implements UserRepository {
   }
 
   private void insertUser(long discordId, String minecraftName) throws SQLException {
-    try (PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(INSERT_USER)) {
+    try (Connection connection = dataSource.getConnection();
+         PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USER)) {
       preparedStatement.setLong(1, discordId);
       preparedStatement.setString(2, minecraftName);
 
@@ -87,8 +91,8 @@ public class MariaDbUserRepository implements UserRepository {
 
   @Override
   public boolean removeUser(String minecraftName) throws SQLException {
-    try (PreparedStatement preparedStatement = dataSource.getConnection()
-        .prepareStatement(DELETE_USER_BY_MINECRAFT_NAME)) {
+    try (Connection connection = dataSource.getConnection();
+         PreparedStatement preparedStatement = connection.prepareStatement(DELETE_USER_BY_MINECRAFT_NAME)) {
       preparedStatement.setString(1, minecraftName);
 
       return preparedStatement.executeUpdate() > 0;
@@ -98,7 +102,8 @@ public class MariaDbUserRepository implements UserRepository {
   @Override
   public Optional<User> get(UUID minecraftUuid) throws SQLException {
     try (
-        PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(GET_USER_BY_MINECRAFT_UUID)) {
+        Connection connection = dataSource.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_BY_MINECRAFT_UUID)) {
       preparedStatement.setString(1, minecraftUuid.toString());
 
       ResultSet resultSet = preparedStatement.executeQuery();
@@ -118,7 +123,8 @@ public class MariaDbUserRepository implements UserRepository {
 
   @Override
   public boolean updateIfPresent(UUID minecraftUuid, String minecraftName) throws SQLException {
-    try (PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(UPDATE_USER)) {
+    try (Connection connection = dataSource.getConnection();
+         PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_USER)) {
       preparedStatement.setString(1, minecraftUuid.toString());
       preparedStatement.setString(2, minecraftName);
 
