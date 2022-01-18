@@ -30,6 +30,13 @@ public class MessageListener extends ListenerAdapter {
     message.delete()
         .queue();
 
+    if (messageContent.length() > 16) {
+      event.getChannel()
+          .sendMessage(createReply(event, messageContent, SaveUserResult.NAME_TO_LONG))
+          .queue();
+      return;
+    }
+
     SaveUserResult saveUserResult = saveUserToDatabase(event, messageContent);
     event.getChannel()
         .sendMessage(createReply(event, messageContent, saveUserResult))
@@ -64,6 +71,7 @@ public class MessageListener extends ListenerAdapter {
     switch (saveUserResult) {
       case SUCCESSFUL -> reply.append(" wurde erfolgreich auf die Whitelist gesetzt.");
       case DUPLICATE -> reply.append(" befindet sich bereits auf der Whitelist.");
+      case NAME_TO_LONG -> reply.append(" ist kein Minecraft Username.");
       case FAILED -> reply.append(" konnte nicht erfolgreich auf die Whitelist gesetzt werden.");
       default -> throw new IllegalStateException("Unexpected value: " + saveUserResult);
     }
@@ -73,6 +81,7 @@ public class MessageListener extends ListenerAdapter {
   private enum SaveUserResult {
     SUCCESSFUL,
     DUPLICATE,
+    NAME_TO_LONG,
     FAILED
   }
 }
