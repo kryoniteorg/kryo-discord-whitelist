@@ -87,7 +87,26 @@ class MessageListenerTest {
     testee.onMessageReceived(messageReceivedEvent);
 
     // Assert
-    verify(messageReceivedEvent.getMessage().delete().and(any())).queue();
+    verify(messageReceivedEvent.getChannel().sendMessage((CharSequence) any())).queue();
+  }
+
+  @Test
+  void shouldHandleIncompatibleUsernameErrors() {
+    // Arrange
+    long discordId = 123456789123L;
+    String discordMessage = "Testeee0123456789";
+
+    MessageReceivedEvent messageReceivedEvent = mock(MessageReceivedEvent.class, Answers.RETURNS_DEEP_STUBS);
+    when(messageReceivedEvent.getAuthor().isBot()).thenReturn(false);
+    when(messageReceivedEvent.getAuthor().getIdLong()).thenReturn(discordId);
+    when(messageReceivedEvent.getChannel().getName()).thenReturn("whitelist");
+    when(messageReceivedEvent.getMessage().getContentStripped()).thenReturn(discordMessage);
+
+    // Act
+    testee.onMessageReceived(messageReceivedEvent);
+
+    // Assert
+    verify(messageReceivedEvent.getChannel().sendMessage((CharSequence) any())).queue();
   }
 
   @Test
