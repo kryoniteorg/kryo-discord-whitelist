@@ -33,7 +33,8 @@ public class MariaDbUserRepository implements UserRepository {
   public MariaDbUserRepository(HikariDataSource dataSource) throws SQLException {
     this.dataSource = dataSource;
 
-    try (PreparedStatement createTable = dataSource.getConnection().prepareStatement(CREATE_USER_TABLE)) {
+    try (Connection connection = dataSource.getConnection();
+         PreparedStatement createTable = connection.prepareStatement(CREATE_USER_TABLE)) {
       createTable.executeUpdate();
     }
   }
