@@ -11,9 +11,7 @@ import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -137,7 +135,7 @@ class WhitelistCommandTest {
   void shouldSuggestOptions_WhenNoOptionIsGiven() {
     // Arrange
     SimpleCommand.Invocation invocation = mock(SimpleCommand.Invocation.class, Answers.RETURNS_DEEP_STUBS);
-    when(invocation.arguments()).thenReturn(new String[]{});
+    when(invocation.arguments()).thenReturn(new String[] {});
 
     // Act
     List<String> suggestions = testee.suggest(invocation);
@@ -150,7 +148,7 @@ class WhitelistCommandTest {
   void shouldSuggestOptions_WhenPartOfOptionIsGiven() {
     // Arrange
     SimpleCommand.Invocation invocation = mock(SimpleCommand.Invocation.class, Answers.RETURNS_DEEP_STUBS);
-    when(invocation.arguments()).thenReturn(new String[]{"dd"});
+    when(invocation.arguments()).thenReturn(new String[] {"dd"});
 
     // Act
     List<String> suggestions = testee.suggest(invocation);
@@ -163,7 +161,7 @@ class WhitelistCommandTest {
   void shouldSuggestPlayerName_WhenNoNameIsGiven() {
     // Arrange
     SimpleCommand.Invocation invocation = mock(SimpleCommand.Invocation.class, Answers.RETURNS_DEEP_STUBS);
-    when(invocation.arguments()).thenReturn(new String[]{"add", ""});
+    when(invocation.arguments()).thenReturn(new String[] {"add", ""});
 
     List<Player> fakePlayers = getFakePlayers();
     when(proxyServerMock.getAllPlayers()).thenReturn(fakePlayers);
@@ -182,7 +180,7 @@ class WhitelistCommandTest {
   void shouldSuggestPlayerName_WhenPartOfNameIsGiven() {
     // Arrange
     SimpleCommand.Invocation invocation = mock(SimpleCommand.Invocation.class, Answers.RETURNS_DEEP_STUBS);
-    when(invocation.arguments()).thenReturn(new String[]{"add", "test"});
+    when(invocation.arguments()).thenReturn(new String[] {"add", "test"});
 
     List<Player> fakePlayers = getFakePlayers();
     when(proxyServerMock.getAllPlayers()).thenReturn(fakePlayers);
