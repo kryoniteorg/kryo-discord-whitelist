@@ -8,7 +8,13 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import com.velocitypowered.api.command.SimpleCommand;
+import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.ProxyServer;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kryonite.kryodiscordwhitelist.common.persistence.repository.UserRepository;
@@ -29,6 +35,9 @@ class WhitelistCommandTest {
 
   @Mock
   private MessagingController messagingController;
+
+  @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+  private ProxyServer proxyServerMock;
 
   @Test
   void shouldSendUsage() {
@@ -122,5 +131,81 @@ class WhitelistCommandTest {
 
     // Assert
     assertTrue(result, "Result was not true");
+  }
+
+  @Test
+  void shouldSuggestOptions_WhenNoOptionIsGiven() {
+    // Arrange
+    SimpleCommand.Invocation invocation = mock(SimpleCommand.Invocation.class, Answers.RETURNS_DEEP_STUBS);
+    when(invocation.arguments()).thenReturn(new String[]{});
+
+    // Act
+    List<String> suggestions = testee.suggest(invocation);
+
+    // Assert
+    Assertions.assertEquals(List.of("add", "remove"), suggestions);
+  }
+
+  @Test
+  void shouldSuggestOptions_WhenPartOfOptionIsGiven() {
+    // Arrange
+    SimpleCommand.Invocation invocation = mock(SimpleCommand.Invocation.class, Answers.RETURNS_DEEP_STUBS);
+    when(invocation.arguments()).thenReturn(new String[]{"dd"});
+
+    // Act
+    List<String> suggestions = testee.suggest(invocation);
+
+    // Assert
+    Assertions.assertEquals(List.of("add"), suggestions);
+  }
+
+  @Test
+  void shouldSuggestPlayerName_WhenNoNameIsGiven() {
+    // Arrange
+    SimpleCommand.Invocation invocation = mock(SimpleCommand.Invocation.class, Answers.RETURNS_DEEP_STUBS);
+    when(invocation.arguments()).thenReturn(new String[]{"add", ""});
+
+    List<Player> fakePlayers = getFakePlayers();
+    when(proxyServerMock.getAllPlayers()).thenReturn(fakePlayers);
+
+    List<String> suggestedNames = getFakePlayers().stream()
+        .map(Player::getUsername).toList();
+
+    // Act
+    List<String> suggestions = testee.suggest(invocation);
+
+    // Assert
+    Assertions.assertEquals(suggestedNames, suggestions);
+  }
+
+  @Test
+  void shouldSuggestPlayerName_WhenPartOfNameIsGiven() {
+    // Arrange
+    SimpleCommand.Invocation invocation = mock(SimpleCommand.Invocation.class, Answers.RETURNS_DEEP_STUBS);
+    when(invocation.arguments()).thenReturn(new String[]{"add", "test"});
+
+    List<Player> fakePlayers = getFakePlayers();
+    when(proxyServerMock.getAllPlayers()).thenReturn(fakePlayers);
+
+    List<String> suggestedNames = List.of("testee");
+
+    // Act
+    List<String> suggestions = testee.suggest(invocation);
+
+    // Assert
+    Assertions.assertEquals(suggestedNames, suggestions);
+  }
+
+  private List<Player> getFakePlayers() {
+    Player player1 = mock(Player.class, Answers.RETURNS_DEEP_STUBS);
+    when(player1.getUsername()).thenReturn("lusu007");
+
+    Player player2 = mock(Player.class, Answers.RETURNS_DEEP_STUBS);
+    when(player2.getUsername()).thenReturn("GitKev");
+
+    Player player3 = mock(Player.class, Answers.RETURNS_DEEP_STUBS);
+    when(player3.getUsername()).thenReturn("testee");
+
+    return List.of(player1, player2, player3);
   }
 }

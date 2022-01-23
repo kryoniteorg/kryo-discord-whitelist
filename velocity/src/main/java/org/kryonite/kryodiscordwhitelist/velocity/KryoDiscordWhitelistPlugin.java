@@ -103,6 +103,7 @@ public class KryoDiscordWhitelistPlugin {
   private void setupCommands(MessagingController messagingController, UserRepository userRepository,
                              ProxyServer server) {
     CommandMeta whitelist = this.server.getCommandManager().metaBuilder("wl").build();
-    this.server.getCommandManager().register(whitelist, new WhitelistCommand(userRepository, messagingController, server));
+    this.server.getCommandManager().register(whitelist,
+        new WhitelistCommand(userRepository, messagingController, server));
   }
 }
