@@ -10,8 +10,11 @@ import static org.mockito.Mockito.when;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
+import com.velocitypowered.api.util.GameProfile;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -167,7 +170,7 @@ class WhitelistCommandTest {
     when(proxyServerMock.getAllPlayers()).thenReturn(fakePlayers);
 
     List<String> suggestedNames = getFakePlayers().stream()
-        .map(Player::getUsername).toList();
+        .map(player -> player.getGameProfile().getName()).toList();
 
     // Act
     List<String> suggestions = testee.suggest(invocation);
@@ -196,13 +199,16 @@ class WhitelistCommandTest {
 
   private List<Player> getFakePlayers() {
     Player player1 = mock(Player.class, Answers.RETURNS_DEEP_STUBS);
-    when(player1.getUsername()).thenReturn("lusu007");
+    when(player1.getGameProfile())
+        .thenReturn(new GameProfile(UUID.randomUUID(), "lusu007", Collections.emptyList()));
 
     Player player2 = mock(Player.class, Answers.RETURNS_DEEP_STUBS);
-    when(player2.getUsername()).thenReturn("GitKev");
+    when(player2.getGameProfile())
+        .thenReturn(new GameProfile(UUID.randomUUID(), "GitKev", Collections.emptyList()));
 
     Player player3 = mock(Player.class, Answers.RETURNS_DEEP_STUBS);
-    when(player3.getUsername()).thenReturn("testee");
+    when(player3.getGameProfile())
+        .thenReturn(new GameProfile(UUID.randomUUID(), "testee", Collections.emptyList()));
 
     return List.of(player1, player2, player3);
   }
