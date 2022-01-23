@@ -2,7 +2,14 @@ package org.kryonite.kryodiscordwhitelist.velocity.command;
 
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
+import com.velocitypowered.api.proxy.ProxyServer;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
@@ -18,6 +25,7 @@ public class WhitelistCommand implements SimpleCommand {
 
   private final UserRepository userRepository;
   private final MessagingController messagingController;
+  private final ProxyServer server;
 
   @Override
   public void execute(Invocation invocation) {
@@ -37,6 +45,30 @@ public class WhitelistCommand implements SimpleCommand {
     } else {
       sendUsage(source);
     }
+  }
+
+  @Override
+  public List<String> suggest(Invocation invocation) {
+    String[] arguments = invocation.arguments();
+
+    if (arguments.length == 0) {
+      return List.of("add", "remove");
+    }
+
+    if (arguments.length == 1) {
+      return Stream.of("add", "remove")
+          .filter(argument -> argument.contains(arguments[0]))
+          .collect(Collectors.toList());
+    }
+
+    if (arguments.length == 2) {
+      return server.getAllPlayers().stream()
+          .map(player -> player.getGameProfile().getName())
+          .filter(playerName -> playerName.contains(arguments[1]))
+          .collect(Collectors.toList());
+    }
+
+    return Collections.emptyList();
   }
 
   @Override
