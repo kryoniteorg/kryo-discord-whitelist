@@ -58,14 +58,14 @@ public class WhitelistCommand implements SimpleCommand {
     if (arguments.length == 1) {
       return Stream.of("add", "remove")
           .filter(argument -> argument.contains(arguments[0]))
-          .collect(Collectors.toList());
+          .toList();
     }
 
     if (arguments.length == 2) {
       return server.getAllPlayers().stream()
           .map(player -> player.getGameProfile().getName())
           .filter(playerName -> playerName.contains(arguments[1]))
-          .collect(Collectors.toList());
+          .toList();
     }
 
     return Collections.emptyList();
