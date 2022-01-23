@@ -4,11 +4,8 @@ import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.ProxyServer;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +19,7 @@ import org.kryonite.kryodiscordwhitelist.velocity.messaging.MessagingController;
 public class WhitelistCommand implements SimpleCommand {
 
   protected static final String PERMISSION = "whitelist";
+  protected static final String[] ARGS_OPTIONS = {"add", "remove"};
 
   private final UserRepository userRepository;
   private final MessagingController messagingController;
@@ -38,9 +36,9 @@ public class WhitelistCommand implements SimpleCommand {
     }
 
     String minecraftName = arguments[1];
-    if (arguments[0].equals("add")) {
+    if (arguments[0].equals(ARGS_OPTIONS[0])) {
       addUser(source, minecraftName);
-    } else if (arguments[0].equals("remove")) {
+    } else if (arguments[0].equals(ARGS_OPTIONS[1])) {
       removeUser(source, minecraftName);
     } else {
       sendUsage(source);
@@ -52,11 +50,11 @@ public class WhitelistCommand implements SimpleCommand {
     String[] arguments = invocation.arguments();
 
     if (arguments.length == 0) {
-      return List.of("add", "remove");
+      return List.of(ARGS_OPTIONS);
     }
 
     if (arguments.length == 1) {
-      return Stream.of("add", "remove")
+      return Stream.of(ARGS_OPTIONS)
           .filter(argument -> argument.contains(arguments[0]))
           .toList();
     }
@@ -77,9 +75,9 @@ public class WhitelistCommand implements SimpleCommand {
   }
 
   private void sendUsage(CommandSource source) {
-    source.sendMessage(Component.text("/whitelist add <name>").color(NamedTextColor.AQUA)
+    source.sendMessage(Component.text("/whitelist " + ARGS_OPTIONS[0] + " <name>").color(NamedTextColor.AQUA)
         .append(Component.newline())
-        .append(Component.text("/whitelist remove <name>").color(NamedTextColor.AQUA)));
+        .append(Component.text("/whitelist " + ARGS_OPTIONS[1] + " <name>").color(NamedTextColor.AQUA)));
   }
 
   private void addUser(CommandSource source, String minecraftName) {
