@@ -63,7 +63,7 @@ public class KryoDiscordWhitelistPlugin {
 
     server.getEventManager().register(this, new PlayerListener(userRepository));
 
-    setupCommands(messagingController, userRepository);
+    setupCommands(messagingController, userRepository, server);
   }
 
   @NotNull
@@ -100,8 +100,10 @@ public class KryoDiscordWhitelistPlugin {
     return connectionString;
   }
 
-  private void setupCommands(MessagingController messagingController, UserRepository userRepository) {
-    CommandMeta whitelist = server.getCommandManager().metaBuilder("wl").build();
-    server.getCommandManager().register(whitelist, new WhitelistCommand(userRepository, messagingController));
+  private void setupCommands(MessagingController messagingController, UserRepository userRepository,
+                             ProxyServer server) {
+    CommandMeta whitelist = this.server.getCommandManager().metaBuilder("wl").build();
+    this.server.getCommandManager().register(whitelist,
+        new WhitelistCommand(userRepository, messagingController, server));
   }
 }
