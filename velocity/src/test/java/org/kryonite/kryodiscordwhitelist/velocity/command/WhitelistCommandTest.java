@@ -41,10 +41,24 @@ class WhitelistCommandTest {
   private ProxyServer proxyServerMock;
 
   @Test
-  void shouldSendUsage() {
+  void shouldSendUsage_WhenNoArgumentGiven() {
     // Arrange
     SimpleCommand.Invocation invocation = mock(SimpleCommand.Invocation.class, Answers.RETURNS_DEEP_STUBS);
     when(invocation.arguments()).thenReturn(new String[] {});
+
+    // Act
+    testee.execute(invocation);
+
+    // Assert
+    verifyNoInteractions(userRepository);
+    verify(invocation.source()).sendMessage(any());
+  }
+
+  @Test
+  void shouldSendUsage_WhenWrongArgumentGiven() {
+    // Arrange
+    SimpleCommand.Invocation invocation = mock(SimpleCommand.Invocation.class, Answers.RETURNS_DEEP_STUBS);
+    when(invocation.arguments()).thenReturn(new String[] {"wrongarg"});
 
     // Act
     testee.execute(invocation);
@@ -68,6 +82,23 @@ class WhitelistCommandTest {
 
     // Assert
     verify(userRepository).addIfNotPresent(minecraftName);
+  }
+
+  @Test
+  void shouldSendMessage_WhenPlayerIsAlreadyWhitelisted() throws SQLException {
+    /// Arrange
+    String minecraftName = "Testee";
+
+    SimpleCommand.Invocation invocation = mock(SimpleCommand.Invocation.class, Answers.RETURNS_DEEP_STUBS);
+    when(invocation.arguments()).thenReturn(new String[] {"add", minecraftName});
+    when(userRepository.addIfNotPresent(any())).thenReturn(false);
+
+    // Act
+    testee.execute(invocation);
+
+    // Assert
+    verify(userRepository).addIfNotPresent(minecraftName);
+    verify(invocation.source()).sendMessage(any());
   }
 
   @Test
@@ -105,6 +136,23 @@ class WhitelistCommandTest {
   }
 
   @Test
+  void shouldSendMessage_WhenPlayerIsNotWhitelisted() throws SQLException {
+    // Arrange
+    String minecraftName = "Testee";
+
+    SimpleCommand.Invocation invocation = mock(SimpleCommand.Invocation.class, Answers.RETURNS_DEEP_STUBS);
+    when(invocation.arguments()).thenReturn(new String[] {"remove", minecraftName});
+    when(userRepository.removeUser(any())).thenReturn(false);
+
+    // Act
+    testee.execute(invocation);
+
+    // Assert
+    verify(userRepository).removeUser(minecraftName);
+    verify(invocation.source()).sendMessage(any());
+  }
+
+  @Test
   void shouldHandleExceptions_WhenTryingToRemovePlayer() throws SQLException {
     // Arrange
     String minecraftName = "Testee";
@@ -132,6 +180,19 @@ class WhitelistCommandTest {
 
     // Assert
     assertTrue(result, "Result was not true");
+  }
+
+  @Test
+  void shouldSuggestNothing() {
+    // Arrange
+    SimpleCommand.Invocation invocation = mock(SimpleCommand.Invocation.class, Answers.RETURNS_DEEP_STUBS);
+    when(invocation.arguments()).thenReturn(new String[] {"add", "lusu007", ""});
+
+    // Act
+    List<String> suggestions = testee.suggest(invocation);
+
+    // Assert
+    Assertions.assertEquals(Collections.emptyList(), suggestions);
   }
 
   @Test
