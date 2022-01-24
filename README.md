@@ -19,6 +19,8 @@
     <img alt="Maintainability Rating" src="https://sonarcloud.io/api/project_badges/measure?project=kryoniteorg_kryo-discord-whitelist&metric=sqale_rating">
     <img alt="Reliability Rating" src="https://sonarcloud.io/api/project_badges/measure?project=kryoniteorg_kryo-discord-whitelist&metric=reliability_rating">
     <img alt="Security Rating" src="https://sonarcloud.io/api/project_badges/measure?project=kryoniteorg_kryo-discord-whitelist&metric=security_rating">
+    <br />
+    <br />
 </div>
 
 
