@@ -6,7 +6,7 @@
 
 <h1 align="center">kryo-discord-bot</h1>
 <div align="center">
-    A Discord bot to whitelist players on a [Velocity](https://github.com/PaperMC/Velocity) with multi-proxy support.
+    A Discord bot to whitelist players on a <a href="https://github.com/PaperMC/Velocity">Velocity</a> with multi-proxy support.
     <br />
     <br />
     <a href="https://github.com/kryoniteorg/kryo-discord-whitelist/issues/new?assignees=&labels=bug&template=bug_report.md">Report Bug</a>
