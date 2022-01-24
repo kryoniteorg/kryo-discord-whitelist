@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.kryonite.kryodiscordwhitelist.common.persistence.entity.User;
 import org.kryonite.kryodiscordwhitelist.common.persistence.repository.UserRepository;
 import org.kryonite.kryodiscordwhitelist.velocity.messaging.MessagingController;
 
@@ -19,7 +20,7 @@ import org.kryonite.kryodiscordwhitelist.velocity.messaging.MessagingController;
 public class WhitelistCommand implements SimpleCommand {
 
   protected static final String PERMISSION = "whitelist";
-  protected static final String[] ARGS_OPTIONS = {"add", "remove"};
+  protected static final String[] ARGS_OPTIONS = {"add", "remove", "list"};
 
   private final UserRepository userRepository;
   private final MessagingController messagingController;
@@ -30,6 +31,12 @@ public class WhitelistCommand implements SimpleCommand {
     CommandSource source = invocation.source();
 
     String[] arguments = invocation.arguments();
+
+    if (arguments.length == 1 && arguments[0].equals(ARGS_OPTIONS[2])) {
+      listUsers(source);
+      return;
+    }
+
     if (arguments.length < 2) {
       sendUsage(source);
       return;
@@ -106,6 +113,18 @@ public class WhitelistCommand implements SimpleCommand {
     } catch (SQLException e) {
       log.error("Failed to remove user {}", minecraftName);
       source.sendMessage(Component.text("Could not remove user " + minecraftName + "!"));
+    }
+  }
+
+  private void listUsers(CommandSource source) {
+    try {
+      List<String> users = userRepository.getAllUsernames().orElse(Collections.emptyList());
+
+      source.sendMessage(Component.text("Currently whitelisted: " + String.join(", ", users))
+          .color(NamedTextColor.AQUA));
+    } catch (SQLException e) {
+      log.error("Failed to get all whitelisted users", e);
+      source.sendMessage(Component.text("Could not list all whitelisted users!"));
     }
   }
 }

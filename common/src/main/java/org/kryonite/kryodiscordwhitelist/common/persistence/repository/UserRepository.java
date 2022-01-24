@@ -2,6 +2,7 @@ package org.kryonite.kryodiscordwhitelist.common.persistence.repository;
 
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.kryonite.kryodiscordwhitelist.common.persistence.entity.User;
@@ -39,6 +40,13 @@ public interface UserRepository {
    * @return an optional with the {@link User}
    */
   Optional<User> get(UUID minecraftUuid) throws SQLException;
+
+  /**
+   * Returns a list of all whitelisted {@link User}'s.
+   *
+   * @return an optional with a list containing all {@link User}'s
+   */
+  Optional<List<String>> getAllUsernames() throws SQLException;
 
   /**
    * Update the minecraft uuid if the player is present. Returns false if the player with the given minecraft name

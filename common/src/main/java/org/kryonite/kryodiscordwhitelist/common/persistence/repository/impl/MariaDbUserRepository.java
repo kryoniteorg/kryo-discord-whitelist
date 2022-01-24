@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.kryonite.kryodiscordwhitelist.common.persistence.entity.User;
@@ -22,6 +24,7 @@ public class MariaDbUserRepository implements UserRepository {
   protected static final String GET_USER_BY_DISCORD_ID = "SELECT * FROM user WHERE minecraft_name = ?";
   protected static final String GET_USER_BY_NAME = "SELECT * FROM user WHERE minecraft_name = ?";
   protected static final String GET_USER_BY_MINECRAFT_UUID = "SELECT * FROM user WHERE minecraft_uuid = ?";
+  protected static final String GET_ALL_USERS = "SELECT minecraft_name FROM user";
   protected static final String DELETE_USER_BY_MINECRAFT_NAME = "DELETE FROM user WHERE minecraft_name = ?";
   protected static final String UPDATE_USER = "UPDATE user SET minecraft_uuid = ? WHERE minecraft_name = ?";
   protected static final String UPDATE_USER_WHERE_DISCORD_ID =
@@ -120,6 +123,22 @@ public class MariaDbUserRepository implements UserRepository {
     }
 
     return Optional.empty();
+  }
+
+  @Override
+  public Optional<List<String>> getAllUsernames() throws SQLException {
+    try (Connection connection = dataSource.getConnection();
+         PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_USERS)) {
+
+      ResultSet resultSet = preparedStatement.executeQuery();
+      List<String> usernames = new ArrayList<>();
+
+      while (resultSet.next()) {
+        usernames.add(resultSet.getString("minecraft_name"));
+      }
+
+      return Optional.of(usernames);
+    }
   }
 
   @Override
