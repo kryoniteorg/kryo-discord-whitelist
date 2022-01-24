@@ -6,7 +6,7 @@
 
 <h1 align="center">kryo-discord-bot</h1>
 <div align="center">
-    A Discord bot to whitelist players on a <a href="https://github.com/PaperMC/Velocity">Velocity</a> with multi-proxy support.
+    A Discord bot to whitelist players on <a href="https://github.com/PaperMC/Velocity">Velocity</a> with multi-proxy support.
     <br />
     <br />
     <a href="https://github.com/kryoniteorg/kryo-discord-whitelist/issues/new?assignees=&labels=bug&template=bug_report.md">Report Bug</a>
@@ -37,7 +37,7 @@ kryo-discord-whitelist needs the following services to be installed and configur
 It is not recommended using the root user of the [MariaDB](https://mariadb.org/) server for kryo-discord-whitelist. Please create an extra database with an extra user that is limited to that database.
 
 ## Setup
-The installation and usage of kryo-discord-whitelist needs to separate modules, the Discord bot itself and a [Velocity](https://github.com/PaperMC/Velocity) plugin. At the moment you need to build all JAR files yourself because we do not distribute prebuilt JARs.  
+The installation and usage of kryo-discord-whitelist needs two separate modules, the Discord bot itself and a [Velocity](https://github.com/PaperMC/Velocity) plugin. At the moment you need to build all JAR files yourself because we do not distribute prebuilt JARs.  
 
 ### Discord bot
 The Discord bot needs access to the Discord API, therefore a token is needed. To get a token a Discord bot needs to be created in the Discord developer portal.
@@ -61,7 +61,7 @@ java -Xms128M -Xmx512M -DTOKEN=DISCORD_TOKEN -DCONNECTION_STRING=jdbc:mariadb://
 ### Velocity plugin
 To install the [Velocity](https://github.com/PaperMC/Velocity) plugin just copy the JAR-file into the plugin directory.
 
-Furthermore, the [Velocity](https://github.com/PaperMC/Velocity) plugin needs some environment variables or start parameters too.
+Furthermore, the [Velocity](https://github.com/PaperMC/Velocity) plugin needs some environment variables. Those can also be provided as startup parameters if the usage of environment variables is not possible.
 
 | Environment variable | Start parameter     | Description                                              |
 |----------------------|---------------------|----------------------------------------------------------|
