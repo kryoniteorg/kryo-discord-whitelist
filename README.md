@@ -1,11 +1,11 @@
-<div style="text-align: center">
+<div align="center">
   <a href="https://github.com/kryoniteorg/kryo-discord-whitelist">
     <img src="https://raw.githubusercontent.com/kryoniteorg/.github/main/assets/kryonite_logo.svg" alt="Kryonite logo" width="80" height="80">
   </a>
 </div>
 
-<h1 style="text-align: center">kryo-discord-bot</h1>
-<div style="text-align: center">
+<h1 align="center">kryo-discord-bot</h1>
+<div align="center">
     A Discord bot to whitelist players on a Velocity proxy with multi-proxy support.
     <br />
     <br />
