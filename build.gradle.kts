@@ -57,7 +57,7 @@ allprojects {
 
     sonarqube {
         properties {
-            property("sonar.projectKey", "kryoniteorg_kryo-discord-bot")
+            property("sonar.projectKey", "kryoniteorg_kryo-discord-whitelist")
             property("sonar.organization", "kryoniteorg")
             property("sonar.host.url", "https://sonarcloud.io")
         }
