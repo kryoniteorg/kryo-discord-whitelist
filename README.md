@@ -81,7 +81,6 @@ java -Xms128M -Xmx1024M -XX:+UseG1GC -XX:G1HeapRegionSize=4M -XX:+UnlockExperime
 | `/whitelist add <username>`    | `whitelist` | Add a player manually to the whitelist.<br/><br/>Manually added players do not have to verify themselves via Discord.                                                                |
 | `/whitelist remove <username>` | `whitelist` | Remove a player from the whitelist.<br/><br/>If the player is online during the command execution the player gets kicked. This is also applicable if the player is on another proxy. |
 
-
 ## Development
 
 ### Building
