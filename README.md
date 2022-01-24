@@ -1,11 +1,11 @@
-<p style="text-align: center">
+<div style="text-align: center">
   <a href="https://github.com/kryoniteorg/kryo-discord-whitelist">
     <img src="https://raw.githubusercontent.com/kryoniteorg/.github/main/assets/kryonite_logo.svg" alt="Kryonite logo" width="80" height="80">
   </a>
-</p>
+</div>
 
 <h1 style="text-align: center">kryo-discord-bot</h1>
-<p style="text-align: center">
+<div style="text-align: center">
     A Discord bot to whitelist players on a Velocity proxy with multi-proxy support.
     <br />
     <br />
@@ -19,7 +19,7 @@
     <img alt="Maintainability Rating" src="https://sonarcloud.io/api/project_badges/measure?project=kryoniteorg_kryo-discord-whitelist&metric=sqale_rating">
     <img alt="Reliability Rating" src="https://sonarcloud.io/api/project_badges/measure?project=kryoniteorg_kryo-discord-whitelist&metric=reliability_rating">
     <img alt="Security Rating" src="https://sonarcloud.io/api/project_badges/measure?project=kryoniteorg_kryo-discord-whitelist&metric=security_rating">
-</p>
+</div>
 
 
 ## About the project
