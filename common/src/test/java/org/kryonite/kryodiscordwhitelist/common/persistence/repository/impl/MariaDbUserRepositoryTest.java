@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kryonite.kryodiscordwhitelist.common.persistence.repository.impl.MariaDbUserRepository.CREATE_USER_TABLE;
 import static org.kryonite.kryodiscordwhitelist.common.persistence.repository.impl.MariaDbUserRepository.DELETE_USER_BY_MINECRAFT_NAME;
+import static org.kryonite.kryodiscordwhitelist.common.persistence.repository.impl.MariaDbUserRepository.GET_ALL_USERS;
 import static org.kryonite.kryodiscordwhitelist.common.persistence.repository.impl.MariaDbUserRepository.GET_USER_BY_DISCORD_ID;
 import static org.kryonite.kryodiscordwhitelist.common.persistence.repository.impl.MariaDbUserRepository.GET_USER_BY_MINECRAFT_UUID;
 import static org.kryonite.kryodiscordwhitelist.common.persistence.repository.impl.MariaDbUserRepository.GET_USER_BY_NAME;
@@ -19,14 +20,18 @@ import static org.mockito.Mockito.when;
 
 import com.zaxxer.hikari.HikariDataSource;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kryonite.kryodiscordwhitelist.common.persistence.entity.User;
+import org.mockito.AdditionalAnswers;
 import org.mockito.Answers;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.Answer;
 
 @ExtendWith(MockitoExtension.class)
 class MariaDbUserRepositoryTest {
@@ -173,6 +178,31 @@ class MariaDbUserRepositoryTest {
     assertTrue(result.isEmpty(), "User was present but was not expected");
     verify(dataSource.getConnection(), atLeastOnce()).prepareStatement(GET_USER_BY_MINECRAFT_UUID);
     verify(dataSource.getConnection().prepareStatement(anyString())).setString(1, minecraftUuid.toString());
+  }
+
+  @Test
+  void shouldGetAllUsernames() throws SQLException {
+    // Arrange
+    List<String> usernames = List.of("lusu007", "GitKev", "testee");
+    MariaDbUserRepository testee = new MariaDbUserRepository(dataSource);
+    when(dataSource.getConnection().prepareStatement(GET_ALL_USERS).executeQuery().next())
+        .thenAnswer(new Answer<Boolean>() {
+          private int iterations = 3;
+
+          @Override
+          public Boolean answer(InvocationOnMock invocation) {
+            return iterations-- > 0;
+          }
+        });
+    when(dataSource.getConnection().prepareStatement(GET_ALL_USERS).executeQuery()
+        .getString("minecraft_name")).thenAnswer(AdditionalAnswers.returnsElementsOf(usernames));
+
+    // Act
+    Optional<List<String>> result = testee.getAllUsernames();
+
+    // Assert
+    assertEquals(usernames, result.orElse(null), "Minecraft usernames did not match");
+    verify(dataSource.getConnection(), atLeastOnce()).prepareStatement(GET_ALL_USERS);
   }
 
   @Test
