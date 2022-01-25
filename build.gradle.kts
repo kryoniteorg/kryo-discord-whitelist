@@ -9,7 +9,7 @@ plugins {
 
 allprojects {
     group = "org.kryonite"
-    version = "0.1.0"
+    version = "1.0.0"
 
     apply(plugin = "java-library")
     apply(plugin = "com.github.johnrengelman.shadow")
@@ -30,7 +30,7 @@ allprojects {
         testImplementation("ch.qos.logback:logback-classic:1.2.10")
         testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
         testImplementation("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
-        testImplementation("org.mockito:mockito-junit-jupiter:4.2.0")
+        testImplementation("org.mockito:mockito-junit-jupiter:4.3.0")
     }
 
     tasks.test {
@@ -57,7 +57,7 @@ allprojects {
 
     sonarqube {
         properties {
-            property("sonar.projectKey", "kryoniteorg_kryo-discord-bot")
+            property("sonar.projectKey", "kryoniteorg_kryo-discord-whitelist")
             property("sonar.organization", "kryoniteorg")
             property("sonar.host.url", "https://sonarcloud.io")
         }
