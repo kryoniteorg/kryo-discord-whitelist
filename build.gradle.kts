@@ -9,7 +9,7 @@ plugins {
 
 allprojects {
     group = "org.kryonite"
-    version = "0.1.0"
+    version = "1.0.0"
 
     apply(plugin = "java-library")
     apply(plugin = "com.github.johnrengelman.shadow")
