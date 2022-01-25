@@ -14,6 +14,7 @@ import com.velocitypowered.api.util.GameProfile;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -166,6 +167,41 @@ class WhitelistCommandTest {
 
     // Assert
     verify(userRepository).removeUser(minecraftName);
+    verify(invocation.source()).sendMessage(any());
+  }
+
+  @Test
+  void shouldListAllWhitelistedPlayers() throws SQLException {
+    // Arrange
+    List<String> usernames = List.of("lusu007", "GitKev", "testee");
+
+    SimpleCommand.Invocation invocation = mock(SimpleCommand.Invocation.class, Answers.RETURNS_DEEP_STUBS);
+    when(invocation.arguments()).thenReturn(new String[] {"list"});
+    when(userRepository.getAllUsernames()).thenReturn(Optional.of(usernames));
+
+    // Act
+    testee.execute(invocation);
+
+    // Assert
+    verify(userRepository).getAllUsernames();
+
+    verify(invocation.source()).sendMessage(any());
+  }
+
+  @Test
+  void shouldHandleExceptions_WhenTryingToListAllWhitelistedPlayers() throws SQLException {
+    // Arrange
+    List<String> usernames = List.of("lusu007", "GitKev", "testee");
+
+    SimpleCommand.Invocation invocation = mock(SimpleCommand.Invocation.class, Answers.RETURNS_DEEP_STUBS);
+    when(invocation.arguments()).thenReturn(new String[] {"list"});
+    when(userRepository.getAllUsernames()).thenThrow(SQLException.class);
+
+    // Act
+    testee.execute(invocation);
+
+    // Assert
+    verify(userRepository).getAllUsernames();
     verify(invocation.source()).sendMessage(any());
   }
 
