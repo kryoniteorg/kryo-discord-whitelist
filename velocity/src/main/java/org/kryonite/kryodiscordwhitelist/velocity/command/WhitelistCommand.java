@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.kryonite.kryodiscordwhitelist.common.persistence.entity.User;
 import org.kryonite.kryodiscordwhitelist.common.persistence.repository.UserRepository;
 import org.kryonite.kryodiscordwhitelist.velocity.messaging.MessagingController;
 
