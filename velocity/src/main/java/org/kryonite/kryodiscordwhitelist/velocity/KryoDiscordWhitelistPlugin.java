@@ -30,7 +30,7 @@ import org.mariadb.jdbc.Driver;
 
 @Slf4j
 @AllArgsConstructor
-@Plugin(id = "kryo-discord-whitelist", name = "Kryo Discord Whitelist", authors = "Kryonite Labs", version = "0.1.0")
+@Plugin(id = "kryo-discord-whitelist", name = "Kryo Discord Whitelist", authors = "Kryonite Labs", version = "1.0.0")
 public class KryoDiscordWhitelistPlugin {
 
   private final ProxyServer server;
