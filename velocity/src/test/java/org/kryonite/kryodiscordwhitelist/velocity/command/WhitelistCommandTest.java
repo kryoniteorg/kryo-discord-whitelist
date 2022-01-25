@@ -144,7 +144,7 @@ class WhitelistCommandTest {
     List<String> suggestions = testee.suggest(invocation);
 
     // Assert
-    Assertions.assertEquals(List.of("add", "remove"), suggestions);
+    Assertions.assertEquals(List.of("add", "remove", "list"), suggestions);
   }
 
   @Test
