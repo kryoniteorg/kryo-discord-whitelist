@@ -20,6 +20,7 @@ public class KryoDiscordWhitelistBot extends ListenerAdapter {
 
     HikariConfig hikariConfig = new HikariConfig();
     hikariConfig.setJdbcUrl(getEnv("CONNECTION_STRING"));
+    hikariConfig.setPoolName("kryo-discord-whitelist-pool");
 
     userRepository = new MariaDbUserRepository(new HikariDataSource(hikariConfig));
   }

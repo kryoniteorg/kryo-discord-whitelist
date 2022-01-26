@@ -87,6 +87,7 @@ public class KryoDiscordWhitelistPlugin {
       DriverManager.registerDriver(new Driver());
       HikariConfig hikariConfig = new HikariConfig();
       hikariConfig.setJdbcUrl(getEnv("CONNECTION_STRING"));
+      hikariConfig.setPoolName("kryo-discord-whitelist-pool");
       hikariDataSource = new HikariDataSource(hikariConfig);
     }
   }
