@@ -3,7 +3,6 @@ package org.kryonite.kryodiscordwhitelist.velocity.messaging;
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.velocitypowered.api.proxy.ProxyServer;
 import java.io.IOException;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.kryonite.kryodiscordwhitelist.velocity.messaging.consumer.PlayerRemovedFromWhitelistConsumer;
 import org.kryonite.kryodiscordwhitelist.velocity.messaging.message.PlayerRemovedFromWhitelist;
@@ -17,13 +16,13 @@ public class MessagingController {
 
   private final MessagingService messagingService;
   private final ProxyServer server;
+  private final String serverName;
 
   public void setupPlayerRemovedFromWhitelist() throws IOException {
     messagingService.setupExchange(PLAYER_REMOVED_FROM_WHITELIST_EXCHANGE, BuiltinExchangeType.FANOUT);
 
-    String queue = UUID.randomUUID().toString();
+    String queue = PLAYER_REMOVED_FROM_WHITELIST_EXCHANGE + "_" + serverName;
     messagingService.bindQueueToExchange(queue, PLAYER_REMOVED_FROM_WHITELIST_EXCHANGE);
-
     messagingService.startConsuming(queue, new PlayerRemovedFromWhitelistConsumer(server),
         PlayerRemovedFromWhitelist.class);
   }
