@@ -12,6 +12,7 @@ allprojects {
     version = "1.0.0"
 
     apply(plugin = "java-library")
+    apply(plugin = "com.github.johnrengelman.shadow")
     apply(plugin = "org.sonarqube")
     apply(plugin = "io.freefair.lombok")
     apply(plugin = "checkstyle")
