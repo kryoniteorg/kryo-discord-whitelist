@@ -1,7 +1,3 @@
-plugins {
-    id("com.github.johnrengelman.shadow") version "7.1.2"
-}
-
 repositories {
     maven(url = "https://jitpack.io")
     maven(url = "https://nexus.velocitypowered.com/repository/maven-public/")
