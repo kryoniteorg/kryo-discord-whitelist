@@ -77,7 +77,7 @@ public class KryoDiscordWhitelistPlugin {
       ));
     }
 
-    messagingController = new MessagingController(messagingService, server);
+    messagingController = new MessagingController(messagingService, server, getEnv("SERVER_NAME"));
     messagingController.setupPlayerRemovedFromWhitelist();
     return messagingController;
   }
