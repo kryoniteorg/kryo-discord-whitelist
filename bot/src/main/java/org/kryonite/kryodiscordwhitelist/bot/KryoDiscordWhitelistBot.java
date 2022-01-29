@@ -4,13 +4,16 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import java.sql.SQLException;
 import javax.security.auth.login.LoginException;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.kryonite.kryodiscordwhitelist.bot.listener.MessageListener;
 import org.kryonite.kryodiscordwhitelist.common.persistence.repository.UserRepository;
 import org.kryonite.kryodiscordwhitelist.common.persistence.repository.impl.MariaDbUserRepository;
+import org.mariadb.jdbc.Driver;
 
+@Slf4j
 public class KryoDiscordWhitelistBot extends ListenerAdapter {
 
   private final UserRepository userRepository;
@@ -19,6 +22,11 @@ public class KryoDiscordWhitelistBot extends ListenerAdapter {
     setupForkJoinPoolParallelism();
 
     HikariConfig hikariConfig = new HikariConfig();
+
+    // The driver class has to be set manually otherwise shadowJar will not probably change the import on relocation.
+    hikariConfig.setDriverClassName(Driver.class.getName());
+    log.info("Using {}", hikariConfig.getDriverClassName());
+
     hikariConfig.setJdbcUrl(getEnv("CONNECTION_STRING"));
     hikariConfig.setPoolName("kryo-discord-whitelist-pool");
 
