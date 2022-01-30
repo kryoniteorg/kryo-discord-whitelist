@@ -1,8 +1,8 @@
 plugins {
     `java-library`
-    id("com.github.johnrengelman.shadow") version "7.1.2"
     id("org.sonarqube") version "3.3"
     id("io.freefair.lombok") version "6.3.0"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
     checkstyle
     jacoco
 }

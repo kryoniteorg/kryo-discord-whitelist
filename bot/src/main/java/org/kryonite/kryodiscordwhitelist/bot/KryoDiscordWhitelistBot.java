@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import java.sql.SQLException;
 import javax.security.auth.login.LoginException;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -11,6 +12,7 @@ import org.kryonite.kryodiscordwhitelist.bot.listener.MessageListener;
 import org.kryonite.kryodiscordwhitelist.common.persistence.repository.UserRepository;
 import org.kryonite.kryodiscordwhitelist.common.persistence.repository.impl.MariaDbUserRepository;
 
+@Slf4j
 public class KryoDiscordWhitelistBot extends ListenerAdapter {
 
   private final UserRepository userRepository;

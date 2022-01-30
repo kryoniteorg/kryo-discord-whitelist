@@ -4,12 +4,12 @@ dependencies {
     implementation("net.dv8tion:JDA:5.0.0-alpha.4") {
         exclude(module = "opus-java")
     }
+}
 
-    tasks {
-        withType<Jar> {
-            manifest {
-                attributes["Main-Class"] = "org.kryonite.kryodiscordwhitelist.bot.KryoDiscordWhitelistBot"
-            }
+tasks {
+    withType<Jar> {
+        manifest {
+            attributes["Main-Class"] = "org.kryonite.kryodiscordwhitelist.bot.KryoDiscordWhitelistBot"
         }
     }
 }
