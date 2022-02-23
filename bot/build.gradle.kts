@@ -1,7 +1,7 @@
 dependencies {
     implementation(project(":kryo-discord-whitelist-common"))
 
-    implementation("net.dv8tion:JDA:5.0.0-alpha.7") {
+    implementation("net.dv8tion:JDA:5.0.0-alpha.8") {
         exclude(module = "opus-java")
     }
 }
