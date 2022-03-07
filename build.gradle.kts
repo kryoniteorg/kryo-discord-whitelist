@@ -25,7 +25,7 @@ allprojects {
     dependencies {
         val junitVersion = "5.8.2"
 
-        implementation("ch.qos.logback:logback-classic:1.2.10")
+        implementation("ch.qos.logback:logback-classic:1.2.11")
 
         testImplementation("ch.qos.logback:logback-classic:1.2.10")
         testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
