@@ -1,7 +1,7 @@
 plugins {
     `java-library`
     id("org.sonarqube") version "3.4.0.2513"
-    id("io.freefair.lombok") version "6.5.0.3"
+    id("io.freefair.lombok") version "6.5.1"
     id("com.github.johnrengelman.shadow") version "7.1.2"
     checkstyle
     jacoco
@@ -23,11 +23,11 @@ allprojects {
     }
 
     dependencies {
-        val junitVersion = "5.8.2"
+        val junitVersion = "5.9.0"
 
-        implementation("ch.qos.logback:logback-classic:1.2.11")
+        implementation("ch.qos.logback:logback-classic:1.4.0")
 
-        testImplementation("ch.qos.logback:logback-classic:1.2.10")
+        testImplementation("ch.qos.logback:logback-classic:1.4.0")
         testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
         testImplementation("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
         testImplementation("org.mockito:mockito-junit-jupiter:4.6.1")
