@@ -23,7 +23,7 @@ allprojects {
     }
 
     dependencies {
-        val junitVersion = "5.8.2"
+        val junitVersion = "5.9.0"
 
         implementation("ch.qos.logback:logback-classic:1.4.0")
 
