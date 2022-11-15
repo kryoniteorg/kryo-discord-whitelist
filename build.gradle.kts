@@ -30,7 +30,7 @@ allprojects {
         testImplementation("ch.qos.logback:logback-classic:1.4.0")
         testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
         testImplementation("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
-        testImplementation("org.mockito:mockito-junit-jupiter:4.8.0")
+        testImplementation("org.mockito:mockito-junit-jupiter:4.9.0")
     }
 
     tasks.test {
